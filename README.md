@@ -1,206 +1,82 @@
-# MNIST Neural Network From Scratch
+# MNIST neuralNet from Scratch
 
-A two-layer neural network implementation built from scratch using only NumPy, designed to classify handwritten digits from the MNIST dataset. This project serves as an educational tool to understand the mathematical foundations of neural networks.
+A two-layer neural network built from scratch using only NumPy for MNIST digit classification. Achieves **84% accuracy** on validation data.
 
-## 🎥 Video Tutorial
-
-Watch the complete implementation and mathematical explanation: [YouTube Video](https://youtu.be/w8yWXqWQYmU)
-
-## 🎯 Results
-
-- **Training Accuracy:** 85.2%
-- **Validation Accuracy:** 84.4%
-- **Training Time:** ~500 iterations
-- **Model Size:** Lightweight (10 hidden units)
-
-## 🏗️ Architecture
+## Architecture
 
 ```
-Input Layer (784 units) → Hidden Layer (10 units, ReLU) → Output Layer (10 units, Softmax)
+Input (784) → Hidden (10, ReLU) → Output (10, Softmax)
 ```
 
-### Network Specifications:
-- **Input:** 784 features (28×28 pixel images, flattened)
-- **Hidden Layer:** 10 units with ReLU activation
-- **Output Layer:** 10 units with Softmax activation (digit classes 0-9)
-- **Optimizer:** Gradient Descent
-- **Learning Rate:** 0.1
+## Mathematics
 
-## 🧮 Mathematical Foundation
-
-### Forward Propagation
+**Forward Propagation:**
 ```
-Z[1] = W[1]X + b[1]
-A[1] = ReLU(Z[1])
-Z[2] = W[2]A[1] + b[2]
-A[2] = Softmax(Z[2])
+Z¹ = W¹X + b¹
+A¹ = ReLU(Z¹)
+Z² = W²A¹ + b²
+A² = Softmax(Z²)
 ```
 
-### Backward Propagation
+**Backward Propagation:**
 ```
-dZ[2] = A[2] - Y
-dW[2] = (1/m) * dZ[2] * A[1]^T
-dZ[1] = W[2]^T * dZ[2] * ReLU'(Z[1])
-dW[1] = (1/m) * dZ[1] * X^T
-```
-
-### Parameter Updates
-```
-W[1] := W[1] - α * dW[1]
-W[2] := W[2] - α * dW[2]
-b[1] := b[1] - α * db[1]
-b[2] := b[2] - α * db[2]
+dZ² = A² - Y
+dW² = (1/m) × dZ² × A¹ᵀ
+db² = (1/m) × Σ(dZ²)
+dZ¹ = W²ᵀ × dZ² ⊙ ReLU'(Z¹)
+dW¹ = (1/m) × dZ¹ × Xᵀ
+db¹ = (1/m) × Σ(dZ¹)
 ```
 
-## 📦 Installation
+**Parameter Updates:**
+```
+W¹ := W¹ - α × dW¹
+W² := W² - α × dW²
+b¹ := b¹ - α × db¹
+b² := b² - α × db²
+```
 
-### Prerequisites
-- Python 3.7+
-- NumPy
-- Pandas
-- Matplotlib
+## Quick Start
 
-### Setup
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/mnist-neural-network-from-scratch.git
-cd mnist-neural-network-from-scratch
-
 # Install dependencies
-pip install -r requirements.txt
+pip install numpy pandas matplotlib
 
-# Download MNIST dataset
-# Place train.csv in the data/ folder (available from Kaggle MNIST competition)
+# Download MNIST train.csv from Kaggle to data/ folder
+# Run training
+python examples/train_model.py
 ```
 
-## 🚀 Quick Start
+## Usage
 
 ```python
-from src.neural_network import TwoLayerNN
-import pandas as pd
-import numpy as np
+from src.neural_network import TwoLayerNN, load_data, prepare_data
 
-# Load data
-data = pd.read_csv('data/train.csv')
-data = np.array(data)
-
-# Prepare training data
+# Load and prepare data
+data = load_data('data/train.csv')
 X_train, Y_train = prepare_data(data[1000:])
 X_dev, Y_dev = prepare_data(data[:1000])
 
-# Initialize and train model
-nn = TwoLayerNN(input_size=784, hidden_size=10, output_size=10)
+# Train model
+nn = TwoLayerNN(784, 10, 10)
 nn.train(X_train, Y_train, epochs=500, learning_rate=0.1)
 
-# Make predictions
+# Evaluate
 accuracy = nn.evaluate(X_dev, Y_dev)
-print(f"Validation Accuracy: {accuracy:.3f}")
+print(f"Accuracy: {accuracy:.3f}")
 ```
 
-## 📁 Project Structure
+## Results
 
-```
-mnist-neural-network/
-│
-├── README.md
-├── requirements.txt
-├── LICENSE
-│
-├── src/
-│   └── neural_network.py      # Main neural network implementation
-│
-├── data/
-│   └── README.md              # Data download instructions
-│
-├── examples/
-│   ├── train_model.py         # Training example
-│   └── visualize_results.py   # Visualization utilities
-│
-└── docs/
-    └── math_derivations.md    # Detailed mathematical explanations
-```
+- **Training Accuracy:** 85.2%
+- **Validation Accuracy:** 84.4%
+- **Parameters:** ~8K (10×784 + 10×10 + biases)
+- **Training Time:** ~30 seconds
 
-## 🔧 Key Features
+## Requirements
 
-- **From Scratch Implementation:** No external ML libraries (TensorFlow, PyTorch, etc.)
-- **Educational Focus:** Clear, readable code with extensive comments
-- **Mathematical Transparency:** All operations implemented explicitly
-- **Visualization Tools:** Plot training progress and sample predictions
-- **Modular Design:** Easy to modify and extend
+- Python 3.7+
+- NumPy ≥ 1.21.0
+- Pandas ≥ 1.3.0  
+- Matplotlib ≥ 3.5.0
 
-## 📊 Performance Metrics
-
-| Metric | Training Set | Validation Set |
-|--------|--------------|----------------|
-| Accuracy | 85.2% | 84.4% |
-| Loss | 0.45 | 0.48 |
-| Training Time | ~30 seconds | - |
-
-## 🎨 Sample Predictions
-
-The model successfully predicts handwritten digits with 84% accuracy on unseen data. Here are some example predictions:
-
-- Image 1: Predicted = 3, Actual = 2 ❌
-- Image 2: Predicted = 1, Actual = 1 ✅
-- Image 3: Predicted = 4, Actual = 4 ✅
-- Image 4: Predicted = 2, Actual = 2 ✅
-
-## 🔍 Understanding the Code
-
-### Core Components
-
-1. **Activation Functions**
-   - ReLU for hidden layer
-   - Softmax for output layer
-
-2. **Loss Function**
-   - Cross-entropy loss (implicit in softmax derivative)
-
-3. **Optimization**
-   - Mini-batch gradient descent
-   - Fixed learning rate
-
-4. **Data Processing**
-   - Normalization (pixel values / 255)
-   - One-hot encoding for labels
-
-## 🤝 Contributing
-
-Contributions are welcome! Here are some ways to improve the project:
-
-- Add different activation functions (tanh, sigmoid, etc.)
-- Implement different optimizers (Adam, RMSprop)
-- Add regularization techniques (dropout, L2 regularization)
-- Create more visualization tools
-- Improve documentation
-
-### Development Setup
-```bash
-# Fork the repository and clone your fork
-git clone https://github.com/yourusername/mnist-neural-network-from-scratch.git
-cd mnist-neural-network-from-scratch
-
-# Create a new branch for your feature
-git checkout -b feature-name
-
-# Make your changes and commit
-git commit -am "Add new feature"
-
-# Push to your fork and create a pull request
-git push origin feature-name
-```
-
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- MNIST dataset creators and Kaggle for hosting
-- The machine learning community for educational resources
-- Viewers and contributors who help improve this project
-
----
-
-⭐ **Star this repository if you found it helpful for learning neural networks!**
