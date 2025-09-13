@@ -35,37 +35,6 @@ W² := W² - α × dW²
 b¹ := b¹ - α × db¹
 b² := b² - α × db²
 ```
-
-## Quick Start
-
-```bash
-# Install dependencies
-pip install numpy pandas matplotlib
-
-# Download MNIST train.csv from Kaggle to data/ folder
-# Run training
-python examples/train_model.py
-```
-
-## Usage
-
-```python
-from src.neural_network import TwoLayerNN, load_data, prepare_data
-
-# Load and prepare data
-data = load_data('data/train.csv')
-X_train, Y_train = prepare_data(data[1000:])
-X_dev, Y_dev = prepare_data(data[:1000])
-
-# Train model
-nn = TwoLayerNN(784, 10, 10)
-nn.train(X_train, Y_train, epochs=500, learning_rate=0.1)
-
-# Evaluate
-accuracy = nn.evaluate(X_dev, Y_dev)
-print(f"Accuracy: {accuracy:.3f}")
-```
-
 ## Results
 
 - **Training Accuracy:** 85.2%
